@@ -53,9 +53,12 @@ router.patch('/:productId',(req,res,next)=>{
 router.delete('/:productId',(req,res,next)=>{
     const id = req.params.productId;    
     Product.findByIdAndRemove(id).then((product)=>{
+        if(!product){
+           return res.status(404).send()
+        }
         res.status(200).send({product})
     }).catch((e)=>{
-        res.send(400).send()
+        res.status(400).send()
     })
 })
 
