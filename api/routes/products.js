@@ -1,19 +1,33 @@
-const express = require('express');
-const router = express.Router();
+const express = require('express')
+const router = express.Router()
 const Product = require('../models/product')
+const multer = require('multer')
+
+const storage = multer.diskStorage({
+    destination: function(req,file,cb){
+        cb(null,'./uploads/')
+    },
+    filename: function(req, file, cb){
+        cb(null,file.originalname)
+    }
+})
+
+const upload = multer({storage})
 
 router.get('/',(req,res,next)=>{
-    Product.find().select("name price _id").then((products)=>{
+    Product.find().select("name price _id productImage").then((products)=>{
         res.status(200).send({count:products.length,products})
     }).catch((e)=>{
         res.status(404).send()
     })
 })
 
-router.post('/',(req,res,next)=>{
+router.post('/', upload.single('productImage'), (req,res,next)=>{
+    console.log(req.file)
     const product = new Product({
         name : req.body.name,
-        price : req.body.price
+        price : req.body.price,
+        productImage: req.file.path
     })
     product.save().then((product)=>{
         res.status(201).send({product})
