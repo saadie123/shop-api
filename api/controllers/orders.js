@@ -2,7 +2,7 @@ const Order = require('../models/order')
 const Product = require('../models/product')
 
 exports.get_all_orders = (req,res,next)=>{
-    Order.find().populate('productId').then(orders=>{
+    Order.find({userId:req.userData.userId}).populate('productId').then(orders=>{
         res.status(200).send({orders})
     }).catch(e=>{
         res.send(404).semd()
@@ -15,9 +15,11 @@ exports.save_order = (req,res,next)=>{
         {
            return res.status(404).send()
         }
+        console.log(req.userData)
         const order = new Order({
             productId: req.body.productId,
-            quantity: req.body.quantity
+            quantity: req.body.quantity,
+            userId: req.userData.userId
         })
        return order.save()
     })
