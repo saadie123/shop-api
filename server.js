@@ -28,11 +28,15 @@ app.use((req,res,next)=>{
 })
 
 //  <---------- Routes to handle requests ---------->
+
 app.use('/products', productRoutes)
 app.use('/orders', orderRoutes)
 app.use('/user', userRoutes)
-//  <---------- Routes to handle requests ---------->
 
+//  <---------- Routes to handle requests finish ---------->
+
+
+//  <---------- Middleware for unknown routes ---------->
 
 app.use((req, res, next)=>{
     const error = new Error('Not Found')
@@ -47,6 +51,8 @@ app.use((error, req, res, next)=>{
         }
     })
 })
+
+//  <---------- Middleware for unknown routes finish ----------> 
 
 app.listen(port,()=>{
     console.log("Server Started on port "+port)
