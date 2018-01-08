@@ -1,7 +1,9 @@
 const express = require('express')
+const router = express.Router()
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
-const router = express.Router()
+const jwt = require('jsonwebtoken')
+
 const User = require('../models/user')
 
 router.post('/signup',(req,res,next)=>{
@@ -19,6 +21,25 @@ router.post('/signup',(req,res,next)=>{
                 res.status(400).send()
             })
         }
+    })
+})
+
+router.post('/login',(req,res,next)=>{
+    User.findOne({email:req.body.email}).then(user=>{
+        if(!user){
+           return res.status(401).send()
+        }
+        bcrypt.compare(req.body.password,user.password, (err,result)=>{
+            if(result){
+               const token = jwt.sign({email:user.email,userId:user._id},"crazystring",{
+                   expiresIn:"1h"
+               },) 
+               return res.status(200).send({token})
+            }
+            res.status(401).send()
+        })
+    }).catch(e=>{
+        res.status(404).send()
     })
 })
 
