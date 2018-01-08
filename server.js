@@ -7,12 +7,13 @@ const port = process.env.PORT || 5000;
 
 const productRoutes = require('./api/routes/products')
 const orderRoutes = require('./api/routes/orders')
+const userRoutes = require('./api/routes/users')
 
 mongoose.Promise = global.Promise
 mongoose.connect('mongodb://localhost:27017/shopApp')
 
 app.use(morgan('dev'))
-app.use('/uploads   ',express.static('uploads'))
+app.use('/uploads',express.static('uploads'))
 app.use(bodyParser.urlencoded({extended:false}))
 app.use(bodyParser.json())
 app.use((req,res,next)=>{
@@ -27,8 +28,9 @@ app.use((req,res,next)=>{
 })
 
 //  <---------- Routes to handle requests ---------->
-app.use('/products',productRoutes)
-app.use('/orders',orderRoutes)
+app.use('/products', productRoutes)
+app.use('/orders', orderRoutes)
+app.use('/user', userRoutes)
 //  <---------- Routes to handle requests ---------->
 
 
